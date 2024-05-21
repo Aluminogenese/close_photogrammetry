@@ -1,5 +1,49 @@
 #include "Resection.h"
 
+void Resection::getImageCoor(const std::string& filePath, std::map<int, Eigen::Vector2d>& imageCoor)
+{
+	std::ifstream file(filePath);
+	if (!file.is_open()) {
+		std::cout << "Error opening file: " << filePath << std::endl;
+	}
+	else {
+		int ID;
+		double x, y;
+		std::string line;
+		std::getline(file, line);// ¶ÁÈ¡Ê×ÐÐ
+		while (std::getline(file, line)) {
+			std::istringstream iss(line);
+			iss >> ID >> x >> y;
+			if (ID >= 100)
+			{
+				imageCoor[ID] = Eigen::Vector2d(x, h - 1 - y);
+			}
+		}
+		file.close();
+	}
+}
+
+void Resection::getObjCoor(const std::string& filePath, std::map<int, Eigen::Vector3d>& objCoor)
+{
+	std::ifstream file(filePath);
+	if (!file.is_open()) {
+		std::cout << "Error opening file: " << filePath << std::endl;
+	}
+	else {
+		int ID, num;
+		double x, y, z;
+		std::string line;
+		file >> num;
+		for (int i = 0; i < num; i++) {
+			std::getline(file, line);
+			std::istringstream iss(line);
+			iss >> ID >> x >> y >> z;
+			objCoor[ID] = Eigen::Vector3d(x, y, z);
+		}
+		file.close();
+	}
+}
+
 void Resection::setEOP(double* EOP)
 {
 	memcpy(this->ext_elements, EOP, 6 * sizeof(double));
@@ -12,10 +56,9 @@ void Resection::setIOP(double* IOP)
 
 void Resection::setCoor(const std::string& imgPath, const std::string& objPath)
 {
-	BaseClass::getImageCoor(imgPath, this->imageCoor);
-	std::map<int, Eigen::Vector3d> originObjCoor;
-	BaseClass::getObjCoor(objPath, originObjCoor);
-	BaseClass::leftHand2RightHand(originObjCoor, this->objCoor);
+	getImageCoor(imgPath, this->imageCoor);
+	getObjCoor(objPath, this->objCoor);
+	leftHand2RightHand(this->objCoor);
 }
 
 void Resection::calculate(const std::string& filePath)

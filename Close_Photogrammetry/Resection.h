@@ -5,8 +5,7 @@
 #include <map>
 #include "BaseClass.h"
 
-#define ITER_TIMES 100
-class Resection
+class Resection : public BaseClass
 {
 public:
 	// 外方位元素Xs(mm) Ys(m) Zs(mm) phi(rad) omega(rad) kappa(rad)
@@ -21,6 +20,8 @@ public:
 	std::map<int, Eigen::Vector3d>objCoor;
 
 public:
+	void getImageCoor(const std::string& filePath, std::map<int, Eigen::Vector2d>& imageCoor);
+	void getObjCoor(const std::string& filePath, std::map<int, Eigen::Vector3d>& objCoor);
 	/// <summary>
 	/// 设置外方位元素
 	/// </summary>
