@@ -1,6 +1,6 @@
 #include "Resection.h"
 
-void Resection::getImageCoor(const std::string& filePath, std::map<int, Eigen::Vector2d>& imageCoor)
+void Resection::_getImageCoor(const std::string& filePath, std::map<int, Eigen::Vector2d>& imageCoor)
 {
 	std::ifstream file(filePath);
 	if (!file.is_open()) {
@@ -14,7 +14,7 @@ void Resection::getImageCoor(const std::string& filePath, std::map<int, Eigen::V
 		while (std::getline(file, line)) {
 			std::istringstream iss(line);
 			iss >> ID >> x >> y;
-			if (ID >= 100)
+			if (ID >= 100)// ID大于100为控制点
 			{
 				imageCoor[ID] = Eigen::Vector2d(x, h - 1 - y);
 			}
@@ -23,7 +23,7 @@ void Resection::getImageCoor(const std::string& filePath, std::map<int, Eigen::V
 	}
 }
 
-void Resection::getObjCoor(const std::string& filePath, std::map<int, Eigen::Vector3d>& objCoor)
+void Resection::_getObjCoor(const std::string& filePath, std::map<int, Eigen::Vector3d>& objCoor)
 {
 	std::ifstream file(filePath);
 	if (!file.is_open()) {
@@ -56,8 +56,8 @@ void Resection::setIOP(double* IOP)
 
 void Resection::setCoor(const std::string& imgPath, const std::string& objPath)
 {
-	getImageCoor(imgPath, this->imageCoor);
-	getObjCoor(objPath, this->objCoor);
+	_getImageCoor(imgPath, this->imageCoor);
+	_getObjCoor(objPath, this->objCoor);
 	leftHand2RightHand(this->objCoor);
 }
 
@@ -181,7 +181,7 @@ void Resection::calculate(const std::string& filePath)
 			matA(2 * count + 1, 4) = -f * cos(kappa) - (y - y0) / f * (
 				(x - x0) * sin(kappa) + (y - y0) * cos(kappa)
 				);
-			matA(2 * count + 1, 5) = -(x - x0);;
+			matA(2 * count + 1, 5) = -(x - x0);
 			//内方位元素
 			matA(2 * count + 1, 6) = (y - y0) / f;
 			matA(2 * count + 1, 7) = 0;
@@ -274,6 +274,44 @@ void Resection::calculate(const std::string& filePath)
 	{
 		std::cout << "迭代失败！" << "共迭代" << i + 1 << "次" << std::endl;
 	}
+
+	outfile.close();
+}
+
+void Resection::saveResult(const std::string& filePath)
+{
+	std::ofstream outfile(filePath, std::ios::trunc);
+	if (!outfile.is_open())
+	{
+		std::cout << "output failed" << std::endl;
+	}
+	double lXsYxZx[3] = { 0 };
+
+	lXsYxZx[0] = -this->ext_elements[2];
+	lXsYxZx[1] = this->ext_elements[0];
+	lXsYxZx[2] = this->ext_elements[1];
+
+	outfile << "---- 外方位线元素(mm) ----" << std::endl;
+	outfile << "Xs " << lXsYxZx[0] << std::endl;
+	outfile << "Ys " << lXsYxZx[1] << std::endl;
+	outfile << "Zs " << lXsYxZx[2] << std::endl;
+
+	outfile << "---- 外方位角元素(rad) ----" << std::endl;
+	outfile << "phi " << this->ext_elements[3] << std::endl;
+	outfile << "omega " << this->ext_elements[4] << std::endl;
+	outfile << "kappa " << this->ext_elements[5] << std::endl;
+
+	outfile << "---- 内方位元素(pix) ----" << std::endl;
+	outfile << "f " << this->int_elements[0] << std::endl;
+	outfile << "x0 " << this->int_elements[1] << std::endl;
+	outfile << "y0 " << h - 1 - this->int_elements[2] << std::endl;
+
+	outfile << "---- 畸变系数 ----" << std::endl;
+	outfile << "k1(pix^-2) " << this->distort_param[0] << std::endl;
+	outfile << "k2(pix^-4) " << this->distort_param[1] << std::endl;
+	outfile << "p1(pix^-1) " << this->distort_param[2] << std::endl;
+	outfile << "p2(pix^-1) " << this->distort_param[3] << std::endl;
+	outfile << std::endl;
 
 	outfile.close();
 }
