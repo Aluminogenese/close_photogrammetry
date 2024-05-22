@@ -60,11 +60,27 @@ private:
 	/// <param name="filePath">文件路径</param>
 	void _getObjCoor(const std::string& filePath);
 
+	/// <summary>
+	/// 计算L系数初始值
+	/// </summary>
+	/// <param name="imgCtrCoor">控制点像点坐标</param>
+	/// <param name="objCtrCoor">控制点物方坐标</param>
+	/// <param name="MatL">L系数</param>
+	/// <param name="x0y0">像主点坐标</param>
 	void _initLvalue(const std::map<int, Eigen::Vector2d>& imgCtrCoor,
 		const std::map<int, Eigen::Vector3d>& objCtrCoor,
 		Eigen::Matrix<double, 3, 4>& MatL,
 		Eigen::Vector2d& x0y0);
 
+	/// <summary>
+	/// /计算L系数精确值
+	/// </summary>
+	/// <param name="reportPath">计算过程保存文件名</param>
+	/// <param name="imgCtrCoor">控制点像点坐标</param>
+	/// <param name="objCtrCoor">控制点物方空间坐标</param>
+	/// <param name="distortParam">畸变系数</param>
+	/// <param name="MatL">L系数</param>
+	/// <param name="x0y0">像主点坐标</param>
 	void _calculateLvalue(const std::string& reportPath,
 		const std::map<int, Eigen::Vector2d>& imgCtrCoor, 
 		const std::map<int, Eigen::Vector3d>& objCtrCoor,
@@ -72,12 +88,41 @@ private:
 		Eigen::Matrix<double, 3, 4>& MatL, 
 		Eigen::Vector2d& x0y0);
 
+	/// <summary>
+	/// 改正像点坐标
+	/// </summary>
+	void _correctImgCoor();
+
+	/// <summary>
+	/// 求待定点坐标初值
+	/// </summary>
+	void _initUknObjCoor();
+
+
 public:
+	/// <summary>
+	/// 外部接口 获取所有坐标
+	/// </summary>
+	/// <param name="leftImgPath">左像点坐标路径</param>
+	/// <param name="rightImgPath">右像点坐标路径</param>
+	/// <param name="controlPath">控制点坐标路径</param>
+	/// <param name="checkConfigPath">检查点点号路径</param>
 	void setCoor(const std::string& leftImgPath, const std::string& rightImgPath, const std::string& controlPath, const std::string& checkConfigPath);
+	
+	/// <summary>
+	/// 外部接口 计算L系数
+	/// </summary>
 	void calculateLvaue();
-	void correctImgCoor();
-	void initUknObjCoor();
+
+	/// <summary>
+	/// 外部接口 计算待定点坐标
+	/// </summary>
 	void calculateUknObjCoor();
+
+	/// <summary>
+	/// 外部接口 保存结果
+	/// </summary>
+	/// <param name="filePath">文件路径</param>
 	void saveResult(const std::string& filePath);
 
 };

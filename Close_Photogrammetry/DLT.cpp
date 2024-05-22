@@ -443,7 +443,7 @@ void DLT::calculateLvaue()
 	_calculateLvalue("right.rep", this->rightImgCtrCoor, this->ctrObjCoor, this->rightDistortParam, this->rightMatL, this->right_x0y0);
 }
 
-void DLT::correctImgCoor()
+void DLT::_correctImgCoor()
 {
 	//合并待定点与检查点的map
 	this->leftImgUknCoor.insert(this->leftImgChkCoor.begin(), this->leftImgChkCoor.end());
@@ -515,7 +515,7 @@ void DLT::correctImgCoor()
 
 }
 
-void DLT::initUknObjCoor()
+void DLT::_initUknObjCoor()
 {
 	this->uknObjCoor.clear();
 
@@ -588,9 +588,9 @@ void DLT::initUknObjCoor()
 void DLT::calculateUknObjCoor()
 {
 	//改正待定点的像点坐标
-	correctImgCoor();
+	_correctImgCoor();
 	//计算待定点的物方坐标初始值
-	initUknObjCoor();
+	_initUknObjCoor();
 
 	std::ofstream outfile;   //输出流
 	std::map<int, double> tmpM; //记录单位权中误差

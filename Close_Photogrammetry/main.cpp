@@ -45,7 +45,6 @@ int main() {
 	dlt.setCoor(leftImgPath, rightImgPath, controlDataPath, checkConfigPath);
 	dlt.calculateLvaue();
 	dlt.calculateUknObjCoor();
-	//======== ¼ÆËã½á¹û ========
 	dlt.saveResult("output/" + str + ".res");
 #endif // DLT_DEBUG
 

@@ -7,7 +7,7 @@
 
 class Resection : public BaseClass
 {
-public:
+private:
 	// 外方位元素Xs(mm) Ys(m) Zs(mm) phi(rad) omega(rad) kappa(rad)
 	double ext_elements[6] = { 0 };
 	// 内方位元素f x0 y0(pixel)
@@ -19,7 +19,7 @@ public:
 	// 物方坐标
 	std::map<int, Eigen::Vector3d>objCoor;
 
-public:
+private:
 	/// <summary>
 	/// 从文件读取控制点像方坐标
 	/// </summary>
@@ -34,6 +34,7 @@ public:
 	/// <param name="objCoor">控制点物方坐标</param>
 	void _getObjCoor(const std::string& filePath, std::map<int, Eigen::Vector3d>& objCoor);
 
+public:
 	/// <summary>
 	/// 设置外方位元素初始值
 	/// </summary>
